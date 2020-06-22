@@ -8,15 +8,16 @@ re
 
 Install with the following commands:
 
-``
+```bash
 	pip3 install requests
-	pip 3 install re
-``
 
-#File Downloader
+	pip 3 install re
+```
+
+# File Downloader
 
 Python 2 and Python 3 versions for HTTP request for a file download.
 
-``
+```bash
 	pip3 install requests
-``
+```
