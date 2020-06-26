@@ -3,8 +3,9 @@
 This program is used to track in stock products, based on user input, and also prices.
 Modules used:
 
-requests
-re
+```requests```
+
+```re```
 
 Install with the following commands:
 
