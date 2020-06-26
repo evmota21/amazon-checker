@@ -18,15 +18,16 @@ itemKeyword = input("Type item to find in stock: ")
 itemToFindURL = itemKeyword.replace(' ', '+')
 itemToFind = itemKeyword
 
-URL = 'https://www.amazon.com.mx/s?k=' + itemToFindURL + '&__mk_es_MX=ÅMÅŽÕÑ&ref=nb_sb_noss_2'
+URL = 'https://www.amazon.com.mx/s?k=' + itemToFindURL + '&__mk_es_MX=ÅMÅŽÕÑ&ref=nb_sb_noss_1'
 
-print(URL)
+print("GET URL Request: ", bcolors.WARNING + URL + bcolors.ENDC)
 
 headers = {
     "User-Agent": 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)'
 }
 
-print("Looking for: " + itemToFind + "\n-----------------------------------")
+print("Looking for: " + itemToFind + "\n--------------------------------- Server response "
+                                     "------------------------")
 
 page = requests.get(URL, headers=headers)
 
@@ -41,24 +42,46 @@ foundItem = 0
 
 print("Item to find: ", itemToFind)
 
-for div in soup.find_all('div',
-                         class_='sg-col-4-of-24 sg-col-4-of-12 sg-col-4-of-36 s-result-item s-asin sg-col-4-of-28 '
-                                'sg-col-4-of-16 sg-col sg-col-4-of-20 sg-col-4-of-32'):
+div = soup.find('div', class_='s-main-slot s-result-list s-search-results sg-row')
+divChildren = div.findChildren('div', recursive=False)
+
+itemCounter = 0
+
+for child in divChildren:
     foundItemThis = 0
-    for img in div.find_all('img',
+    for img in child.find_all('img',
                             alt=True):
         if re.search(r'.*' + itemToFind + '.*', img['alt'], re.IGNORECASE):
-            print(bcolors.OKBLUE + "FOUND!" + bcolors.ENDC)
+            print(bcolors.OKBLUE + "--------------------------------- FOUND! ---------------------------------" + bcolors.ENDC)
             print(bcolors.OKGREEN + img['alt'] + bcolors.ENDC)
             foundItem = 1
             foundItemThis = 1
     if foundItemThis == 1:
-        spanPrice = div.find('span', class_='a-price')
+        spanPrice = child.find('span', class_='a-price')
         if spanPrice:
             price = spanPrice.find('span', class_='a-offscreen')
             print(bcolors.BOLD + price.text + bcolors.ENDC)
-        for span in div.find_all('span', class_='aok-inline-block s-image-logo-view'):
+        for span in child.find_all('span', class_='aok-inline-block s-image-logo-view'):
             print(bcolors.UNDERLINE + "Available with prime!" + bcolors.ENDC)
+
+# for div in soup.find_all('div',
+#                          class_='sg-col-20-of-24 s-result-item s-asin sg-col-0-of-12 sg-col-28-of-32 sg-col-16-of-20 '
+#                                 'sg-col sg-col-32-of-36 sg-col-12-of-16 sg-col-24-of-28'):
+#     foundItemThis = 0
+#     for img in div.find_all('img',
+#                             alt=True):
+#         if re.search(r'.*' + itemToFind + '.*', img['alt'], re.IGNORECASE):
+#             print(bcolors.OKBLUE + "FOUND!" + bcolors.ENDC)
+#             print(bcolors.OKGREEN + img['alt'] + bcolors.ENDC)
+#             foundItem = 1
+#             foundItemThis = 1
+#     if foundItemThis == 1:
+#         spanPrice = div.find('span', class_='a-price')
+#         if spanPrice:
+#             price = spanPrice.find('span', class_='a-offscreen')
+#             print(bcolors.BOLD + price.text + bcolors.ENDC)
+#         for span in div.find_all('span', class_='aok-inline-block s-image-logo-view'):
+#             print(bcolors.UNDERLINE + "Available with prime!" + bcolors.ENDC)
 
 if foundItem == 0:
     print(bcolors.WARNING + "No items found!" + bcolors.ENDC)
