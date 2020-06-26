@@ -47,11 +47,16 @@ divChildren = div.findChildren('div', recursive=False)
 
 itemCounter = 0
 
+itemToFind = re.sub('[^A-Za-z0-9]+', ' ', itemToFind)
+
 for child in divChildren:
     foundItemThis = 0
     for img in child.find_all('img',
                             alt=True):
-        if re.search(r'.*' + itemToFind + '.*', img['alt'], re.IGNORECASE):
+        itemName = img['alt']
+        itemName = re.sub('[^A-Za-z0-9.,]+', ' ', itemName)
+        print(itemName)
+        if re.search(r'.*' + itemToFind + '.*', itemName, re.IGNORECASE):
             print(bcolors.OKBLUE + "--------------------------------- FOUND! ---------------------------------" + bcolors.ENDC)
             print(bcolors.OKGREEN + img['alt'] + bcolors.ENDC)
             foundItem = 1
